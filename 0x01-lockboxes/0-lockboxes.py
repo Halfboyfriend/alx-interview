@@ -26,7 +26,3 @@ def canUnlockAll(boxes):
                 checkBox[key] = True
                 stack.append(key)
     return all(checkBox)
-
-
-boxes = [[1], [2], [3], [4], []]
-print(canUnlockAll(boxes))
