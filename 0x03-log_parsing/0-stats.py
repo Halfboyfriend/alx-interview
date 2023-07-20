@@ -3,37 +3,50 @@
 Write a script that reads stdin line by line and computes metrics
 """
 
-
+from collections import defaultdict
+import signal
 import sys
 
-cache = {'200': 0, '301': 0, '400': 0, '401': 0,
-         '403': 0, '404': 0, '405': 0, '500': 0}
-total_size = 0
-counter = 0
+def signal_handler(sig, frame):
+    print_statistics()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+status_codes = {200, 301, 400, 401, 403, 404, 405, 500}
+total_file_size = 0
+lines_by_status_code = defaultdict(int)
+line_count = 0
+
+def print_statistics():
+    print(f"Total file size: File size: {total_file_size}")
+    for status_code in sorted(status_codes):
+        if lines_by_status_code[status_code]:
+            print(f"{status_code}: {lines_by_status_code[status_code]}")
 
 try:
     for line in sys.stdin:
-        line_list = line.split(" ")
-        if len(line_list) > 4:
-            code = line_list[-2]
-            size = int(line_list[-1])
-            if code in cache.keys():
-                cache[code] += 1
-            total_size += size
-            counter += 1
+        line = line.strip()
+        parts = line.split()
+        if len(parts) != 7:
+            continue
 
-        if counter == 10:
-            counter = 0
-            print('File size: {}'.format(total_size))
-            for key, value in sorted(cache.items()):
-                if value != 0:
-                    print('{}: {}'.format(key, value))
+        _, _, _, _, status_code, file_size, _ = parts
 
-except Exception as err:
-    pass
+        try:
+            status_code = int(status_code)
+            file_size = int(file_size)
+        except ValueError:
+            continue
 
-finally:
-    print('File size: {}'.format(total_size))
-    for key, value in sorted(cache.items()):
-        if value != 0:
-            print('{}: {}'.format(key, value))
+        if status_code in status_codes:
+            total_file_size += file_size
+            lines_by_status_code[status_code] += 1
+            line_count += 1
+
+        if line_count % 10 == 0:
+            print_statistics()
+
+except KeyboardInterrupt:
+    print_statistics()
+    sys.exit(0)
