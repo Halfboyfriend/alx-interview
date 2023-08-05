@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""nquuen program solved with backtracking"""
+"""nqueen program solved with backtracking"""
 import sys
 
 
