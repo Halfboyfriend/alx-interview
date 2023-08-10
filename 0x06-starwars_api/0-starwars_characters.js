@@ -2,42 +2,42 @@
 const request = require('request');
 
 async function getMoviesCharacter(id) {
-    const url = `https://swapi.dev/api/films/${id}/`;
+    const url = `https://swapi-api.alx-tools.com/api/films/${id}/`;
    const data = await request(url, (error, response, body) => {
         if(error){
-            console.log(`Failed to retrieve movie data for movieId ${id}`)
-            return
+            console.log(`Failed to retrieve movie data for movieId ${id}`);
+            return;
         }
 
         if (response.statusCode !== 200){
-            console.log(`Failed to retrieve movie data for movieId ${id}`)
-            return
+            console.log(`Failed to retrieve movie data for movieId ${id}`);
+            return;
         }
 
         const movieDt = JSON.parse(body);
-        const characters = movieDt.characters
+        const characters = movieDt.characters;
 
 
         characters.forEach(element => {
             request(element, (CharError, CharReponse, CharBody) => {
                 if(CharError){
                     console.log(`Failed to retrieve movie data for movieId ${id}`)
-                    return
+                    return;
                 }
         
                 if (CharReponse.statusCode !== 200){
                     console.log(`Failed to retrieve movie data for movieId ${id}`)
-                    return
+                    return;
                 }
 
                 const CharacterData = JSON.parse(CharBody);
-                const CharacterName = CharacterData.name
-                console.log(CharacterName)
+                const CharacterName = CharacterData.name;
+                console.log(CharacterName);
             })
         });
     })
 
-    return data
+    return data;
 
 }
 
