@@ -1,7 +1,5 @@
 #!/usr/bin/node
-// Write a script that prints all characters of a Star Wars movie:
 const request = require('request');
-
 
 async function getMoviesCharacter(id) {
     const url = `https://swapi.dev/api/films/${id}/`;
