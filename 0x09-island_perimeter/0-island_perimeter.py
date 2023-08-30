@@ -21,9 +21,7 @@ def island_perimeter(grid):
 
                 # Check left neighbor
                 if col > 0 and grid[row][col - 1] == 1:
-                    perimeter -= 2  
-
-                # Check top neighbor
+                    perimeter -= 2  # Check top neighbor
                 if row > 0 and grid[row - 1][col] == 1:
                     perimeter -= 2  # Subtract 2 for each shared side
 
