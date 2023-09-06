@@ -7,45 +7,39 @@ def isWinner(x, nums):
     def is_prime(num):
         if num <= 1:
             return False
-        if num <= 3:
-            return True
-        if num % 2 == 0 or num % 3 == 0:
-            return False
-        i = 5
-        while i * i <= num:
-            if num % i == 0 or num % (i + 2) == 0:
+        for i in range(2, int(num ** 0.5) + 1):
+            if num % i == 0:
                 return False
-            i += 6
         return True
 
-    def play_round(n):
-        if n % 2 == 0:
-            return "Ben"
+    def can_win(n):
+        dp = [False] * (n + 1)
+        dp[0] = False
+        dp[1] = False
+
+        for i in range(2, n + 1):
+            if is_prime(i):
+                dp[i] = True
+            else:
+                for j in range(2, i):
+                    if i % j == 0 and dp[i - j] is False:
+                        dp[i] = True
+                        break
+
+        return dp[n]
+
+    maria_wins = 0
+    ben_wins = 0
+
+    for n in nums:
+        if can_win(n):
+            maria_wins += 1
         else:
-            return "Maria"
+            ben_wins += 1
 
-    winner_count = {"Maria": 0, "Ben": 0}
-
-    for i in range(x):
-        n = nums[i]
-        current_player = play_round(n)
-        while n > 1:
-            prime = 2
-            if not is_prime(prime):
-                prime += 1
-            while n % prime != 0:
-                prime += 2
-                while not is_prime(prime):
-                    prime += 2
-            while n % prime == 0:
-                n //= prime
-            current_player = "Maria" if current_player == "Ben" else "Ben"
-
-        winner_count[current_player] += 1
-
-    if winner_count["Maria"] > winner_count["Ben"]:
+    if maria_wins > ben_wins:
         return "Maria"
-    elif winner_count["Ben"] > winner_count["Maria"]:
+    elif ben_wins > maria_wins:
         return "Ben"
     else:
         return None
