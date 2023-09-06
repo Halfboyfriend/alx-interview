@@ -3,7 +3,10 @@
 0. Prime Game
 """
 
+
 def isWinner(x, nums):
+    """
+    params"""
     def is_prime(num):
         if num < 2:
             return False
@@ -13,12 +16,16 @@ def isWinner(x, nums):
         return True
 
     def can_win(n):
+        """
+        If the number of prime numbers is even,
+        Ben wins; otherwise, Maria wins
+        Count the number of prime numbers in the range [2, n]
+        """
         if n <= 1:
             return False
         if n <= 3:
             return True
 
-        # Count the number of prime numbers in the range [2, n]
         primes = [1] * (n + 1)
         primes[0] = primes[1] = 0
         for i in range(2, int(n**0.5) + 1):
@@ -27,13 +34,10 @@ def isWinner(x, nums):
                     primes[j] = 0
 
         prime_count = sum(primes)
-
-        # If the number of prime numbers is even, Ben wins; otherwise, Maria wins
         return prime_count % 2 == 0
 
     maria_wins = 0
     ben_wins = 0
-
     for n in nums:
         if can_win(n):
             ben_wins += 1
@@ -46,9 +50,3 @@ def isWinner(x, nums):
         return "Ben"
     else:
         return None
-
-# Example usage:
-x = 3
-nums = [4, 5, 1]
-result = isWinner(x, nums)
-print("Result:", result)
