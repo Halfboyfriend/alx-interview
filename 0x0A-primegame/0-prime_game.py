@@ -5,37 +5,40 @@
 
 def isWinner(x, nums):
     def is_prime(num):
-        if num <= 1:
+        if num < 2:
             return False
-        for i in range(2, int(num ** 0.5) + 1):
+        for i in range(2, int(num**0.5) + 1):
             if num % i == 0:
                 return False
         return True
 
     def can_win(n):
-        dp = [False] * (n + 1)
-        dp[0] = False
-        dp[1] = False
+        if n <= 1:
+            return False
+        if n <= 3:
+            return True
 
-        for i in range(2, n + 1):
-            if is_prime(i):
-                dp[i] = True
-            else:
-                for j in range(2, i):
-                    if i % j == 0 and dp[i - j] is False:
-                        dp[i] = True
-                        break
+        # Count the number of prime numbers in the range [2, n]
+        primes = [1] * (n + 1)
+        primes[0] = primes[1] = 0
+        for i in range(2, int(n**0.5) + 1):
+            if primes[i]:
+                for j in range(i * i, n + 1, i):
+                    primes[j] = 0
 
-        return dp[n]
+        prime_count = sum(primes)
+
+        # If the number of prime numbers is even, Ben wins; otherwise, Maria wins
+        return prime_count % 2 == 0
 
     maria_wins = 0
     ben_wins = 0
 
     for n in nums:
         if can_win(n):
-            maria_wins += 1
-        else:
             ben_wins += 1
+        else:
+            maria_wins += 1
 
     if maria_wins > ben_wins:
         return "Maria"
@@ -43,3 +46,9 @@ def isWinner(x, nums):
         return "Ben"
     else:
         return None
+
+# Example usage:
+x = 3
+nums = [4, 5, 1]
+result = isWinner(x, nums)
+print("Result:", result)
